@@ -1,4 +1,8 @@
 services:
+  caddy:
+    environment:
+      STORAGE_HOSTNAME: ${STORAGE_HOSTNAME}
+
   minio-profy:
     image: minio/minio:latest
     container_name: minio-profy
