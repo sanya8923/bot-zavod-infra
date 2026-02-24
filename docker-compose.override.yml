@@ -1,0 +1,77 @@
+services:
+  minio-profy:
+    image: minio/minio:latest
+    container_name: minio-profy
+    profiles: ["profy-storage"]
+    restart: unless-stopped
+    command: server --address ":9000" --console-address ":9001" /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-}
+    volumes:
+      - profy_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  minio-profy-init:
+    image: minio/mc:latest
+    container_name: minio-profy-init
+    profiles: ["profy-storage"]
+    restart: "no"
+    depends_on:
+      minio-profy:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        until mc alias set profy http://minio-profy:9000 "${MINIO_ACCESS_KEY:-minio}" "${MINIO_SECRET_KEY:-}"; do
+          sleep 2
+        done
+        mc mb --ignore-existing "profy/${MINIO_BUCKET:-profy-images}"
+        mc anonymous set download "profy/${MINIO_BUCKET:-profy-images}"
+
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io:latest
+    container_name: changedetection
+    profiles: ["future-changedetection"]
+    restart: unless-stopped
+    environment:
+      BASE_URL: ${CHANGEDETECTION_BASE_URL:-}
+      PLAYWRIGHT_DRIVER_URL: ${CHANGEDETECTION_PLAYWRIGHT_DRIVER_URL:-ws://changedetection-browser:3000}
+      TZ: ${GENERIC_TIMEZONE:-America/New_York}
+    volumes:
+      - changedetection_data:/datastore
+    depends_on:
+      changedetection-browser:
+        condition: service_started
+
+  changedetection-browser:
+    image: browserless/chrome:latest
+    container_name: changedetection-browser
+    profiles: ["future-changedetection"]
+    restart: unless-stopped
+    environment:
+      PREBOOT_CHROME: "true"
+      MAX_CONCURRENT_SESSIONS: "5"
+      TOKEN: ${CHANGEDETECTION_BROWSER_TOKEN:-}
+
+  mtproto-bridge:
+    image: alpine:3.20
+    container_name: mtproto-bridge
+    profiles: ["future-mtproto"]
+    restart: unless-stopped
+    command: ["sh", "-c", "echo 'MTProto bridge stub container. Replace with production image.' && sleep infinity"]
+    environment:
+      MTBRIDGE_API_ID: ${MTBRIDGE_API_ID:-}
+      MTBRIDGE_API_HASH: ${MTBRIDGE_API_HASH:-}
+      MTBRIDGE_BOT_TOKEN: ${MTBRIDGE_BOT_TOKEN:-}
+      MTBRIDGE_PUBLIC_BASE_URL: ${MTBRIDGE_PUBLIC_BASE_URL:-}
+
+volumes:
+  profy_minio_data:
+  changedetection_data:
