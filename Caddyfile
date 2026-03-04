@@ -161,6 +161,15 @@ https://{$NEO4J_HOSTNAME}:7687 {
     reverse_proxy neo4j:7687
 }
 
+# pgAdmin
+{$PGADMIN_HOSTNAME} {
+    import service_tls
+    basic_auth {
+        {$PGADMIN_USERNAME} {$PGADMIN_PASSWORD_HASH}
+    }
+    reverse_proxy pgadmin:80
+}
+
 # NocoDB
 {$NOCODB_HOSTNAME} {
     import service_tls

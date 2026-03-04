@@ -18,6 +18,7 @@ volumes:
   n8n_storage:
   nocodb_data:
   ollama_storage:
+  pgadmin_data:
   open-webui:
   paddle_cache:
   paddleocr_cache:
@@ -302,6 +303,26 @@ services:
       redis:
         condition: service_healthy
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    profiles: ["pgadmin"]
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/misc/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   caddy:
     container_name: caddy
     image: docker.io/library/caddy:2-alpine
@@ -340,6 +361,9 @@ services:
       PADDLEOCR_HOSTNAME: ${PADDLEOCR_HOSTNAME}
       PADDLEOCR_PASSWORD_HASH: ${PADDLEOCR_PASSWORD_HASH}
       PADDLEOCR_USERNAME: ${PADDLEOCR_USERNAME}
+      PGADMIN_HOSTNAME: ${PGADMIN_HOSTNAME}
+      PGADMIN_PASSWORD_HASH: ${PGADMIN_PASSWORD_HASH}
+      PGADMIN_USERNAME: ${PGADMIN_USERNAME}
       PORTAINER_HOSTNAME: ${PORTAINER_HOSTNAME}
       DATABASUS_HOSTNAME: ${DATABASUS_HOSTNAME}
       POSTIZ_HOSTNAME: ${POSTIZ_HOSTNAME}
