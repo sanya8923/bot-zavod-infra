@@ -1302,6 +1302,7 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=bookstack
       - DB_USERNAME=bookstack
+      - APP_KEY=${BOOKSTACK_APP_KEY}
       - DB_PASSWORD=${BOOKSTACK_DB_PASSWORD}
     volumes:
       - bookstack_data:/config

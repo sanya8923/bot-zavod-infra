@@ -103,6 +103,7 @@ declare -A VARS_TO_GENERATE=(
     ["NEXTAUTH_SECRET"]="secret:64" # base64 encoded, 48 bytes -> 64 chars
     ["NOCODB_JWT_SECRET"]="secret:64" # NocoDB authentication JWT secret
     ["BOOKSTACK_DB_PASSWORD"]="password:32"
+    # BOOKSTACK_APP_KEY is NOT auto-generated — use: docker run --rm --entrypoint /bin/bash lscr.io/linuxserver/bookstack:latest appkey
     ["BOOKSTACK_DB_ROOT_PASSWORD"]="password:32"
     ["MTBRIDGE_PASSWORD"]="password:32" # MTProto Bridge basic auth password
     ["PADDLEOCR_PASSWORD"]="password:32" # Added PaddleOCR basic auth password

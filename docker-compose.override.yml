@@ -64,18 +64,6 @@ services:
       MAX_CONCURRENT_SESSIONS: "5"
       TOKEN: ${CHANGEDETECTION_BROWSER_TOKEN:-}
 
-  mtproto-bridge:
-    image: alpine:3.20
-    container_name: mtproto-bridge
-    profiles: ["future-mtproto"]
-    restart: unless-stopped
-    command: ["sh", "-c", "echo 'MTProto bridge stub container. Replace with production image.' && sleep infinity"]
-    environment:
-      MTBRIDGE_API_ID: ${MTBRIDGE_API_ID:-}
-      MTBRIDGE_API_HASH: ${MTBRIDGE_API_HASH:-}
-      MTBRIDGE_BOT_TOKEN: ${MTBRIDGE_BOT_TOKEN:-}
-      MTBRIDGE_PUBLIC_BASE_URL: ${MTBRIDGE_PUBLIC_BASE_URL:-}
-
 volumes:
   profy_minio_data:
   changedetection_data:
