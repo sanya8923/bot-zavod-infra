@@ -228,6 +228,21 @@ http://{$WELCOME_HOSTNAME} {
     try_files {path} /index.html
 }
 
+# BookStack (Knowledge Base / Wiki)
+{$BOOKSTACK_HOSTNAME} {
+    import service_tls
+    reverse_proxy bookstack:80
+}
+
+# MTProto Bridge (Telegram MTProto API - internal, protected)
+{$MTBRIDGE_HOSTNAME} {
+    import service_tls
+    basic_auth {
+        {$MTBRIDGE_USERNAME} {$MTBRIDGE_PASSWORD_HASH}
+    }
+    reverse_proxy mtproto-bridge:8000
+}
+
 # Import custom site addons
 import /etc/caddy/addons/site-*.conf
 

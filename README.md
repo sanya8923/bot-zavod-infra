@@ -84,6 +84,10 @@ The installer also makes the following powerful open-source tools **available fo
 
 ✅ [**Neo4j**](https://neo4j.com/) - A graph database management system that allows you to model, store, and query data as a network of nodes and relationships.
 
+✅ [**BookStack**](https://www.bookstackapp.com/) - A simple, self-hosted, easy-to-use platform for organising and storing information as a knowledge base / wiki.
+
+✅ [**MTProto Bridge**](https://pyrogram.org/) - A lightweight FastAPI service that exposes Telegram MTProto API (read messages, validate channels, join chats) over HTTP for use in n8n workflows.
+
 ✅ [**NocoDB**](https://nocodb.com/) - An open source Airtable alternative that turns any database into a smart spreadsheet with a no-code interface for building collaborative apps.
 
 ✅ [**Ollama**](https://ollama.com/) - Run Llama 3, Mistral, Gemma, and other large language models locally.

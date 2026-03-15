@@ -260,6 +260,22 @@
             category: 'database',
             docsUrl: 'https://nocodb.com/docs/product-docs'
         },
+        'bookstack': {
+            name: 'BookStack',
+            description: 'Knowledge Base & Wiki',
+            icon: 'BS',
+            color: 'bg-[#0288D1]',
+            category: 'tools',
+            docsUrl: 'https://www.bookstackapp.com/docs'
+        },
+        'mtproto-bridge': {
+            name: 'MTProto Bridge',
+            description: 'Telegram MTProto API',
+            icon: 'TG',
+            color: 'bg-[#229ED9]',
+            category: 'automation',
+            docsUrl: 'https://docs.pyrogram.org'
+        },
         'searxng': {
             name: 'SearXNG',
             description: 'Private Metasearch Engine',

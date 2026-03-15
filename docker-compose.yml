@@ -37,6 +37,9 @@ volumes:
   temporal_elasticsearch_data:
   valkey-data:
   weaviate_data:
+  bookstack_data:
+  bookstack_db_data:
+  mtproto_session:
 
 # Shared logging configuration for services
 x-logging: &default-logging
@@ -389,6 +392,10 @@ services:
       WELCOME_HOSTNAME: ${WELCOME_HOSTNAME}
       WELCOME_PASSWORD_HASH: ${WELCOME_PASSWORD_HASH}
       WELCOME_USERNAME: ${WELCOME_USERNAME}
+      BOOKSTACK_HOSTNAME: ${BOOKSTACK_HOSTNAME}
+      MTBRIDGE_HOSTNAME: ${MTBRIDGE_HOSTNAME}
+      MTBRIDGE_USERNAME: ${MTBRIDGE_USERNAME}
+      MTBRIDGE_PASSWORD_HASH: ${MTBRIDGE_PASSWORD_HASH}
     cap_drop:
       - ALL
     cap_add:
@@ -1278,3 +1285,78 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+
+  # =========================================
+  # BookStack (Knowledge Base / Wiki)
+  # =========================================
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: bookstack
+    profiles: ["bookstack"]
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://${BOOKSTACK_HOSTNAME}
+      - DB_HOST=bookstack-db
+      - DB_PORT=3306
+      - DB_DATABASE=bookstack
+      - DB_USERNAME=bookstack
+      - DB_PASSWORD=${BOOKSTACK_DB_PASSWORD}
+    volumes:
+      - bookstack_data:/config
+    depends_on:
+      bookstack-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  bookstack-db:
+    image: mariadb:10.11
+    container_name: bookstack-db
+    profiles: ["bookstack"]
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${BOOKSTACK_DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=bookstack
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD=${BOOKSTACK_DB_PASSWORD}
+    volumes:
+      - bookstack_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =========================================
+  # MTProto Bridge (Telegram MTProto API)
+  # =========================================
+  mtproto-bridge:
+    build:
+      context: ./mtproto-bridge
+      dockerfile: Dockerfile
+    image: mtproto-bridge
+    container_name: mtproto-bridge
+    profiles: ["mtproto"]
+    restart: unless-stopped
+    environment:
+      - API_ID=${MTBRIDGE_API_ID}
+      - API_HASH=${MTBRIDGE_API_HASH}
+      - PHONE=${MTBRIDGE_PHONE:-}
+      - SESSION_STRING=${MTBRIDGE_SESSION_STRING:-}
+      - SESSION_NAME=/data/mtproto
+      - REQUEST_MIN_INTERVAL=${MTBRIDGE_REQUEST_MIN_INTERVAL:-0.7}
+      - LOG_LEVEL=${MTBRIDGE_LOG_LEVEL:-info}
+    volumes:
+      - mtproto_session:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s

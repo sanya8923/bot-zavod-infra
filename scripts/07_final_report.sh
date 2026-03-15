@@ -97,6 +97,12 @@ fi
 if is_profile_active "nocodb"; then
     echo -e "     ${GREEN}*${NC} ${WHITE}NocoDB${NC}: Create your account on first login"
 fi
+if is_profile_active "bookstack"; then
+    echo -e "     ${GREEN}*${NC} ${WHITE}BookStack${NC}: Default login admin@admin.com / password — change immediately!"
+fi
+if is_profile_active "mtproto"; then
+    echo -e "     ${GREEN}*${NC} ${WHITE}MTProto Bridge${NC}: Set MTBRIDGE_SESSION_STRING — run: docker compose -p localai run --rm mtproto-bridge python scripts/generate_session.py"
+fi
 if is_profile_active "postiz"; then
     echo -e "     ${GREEN}*${NC} ${WHITE}Postiz${NC}: Create your account on first login"
 fi

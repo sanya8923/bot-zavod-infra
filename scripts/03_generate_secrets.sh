@@ -102,6 +102,9 @@ declare -A VARS_TO_GENERATE=(
     ["NEO4J_AUTH_USERNAME"]="fixed:neo4j" # Added Neo4j username
     ["NEXTAUTH_SECRET"]="secret:64" # base64 encoded, 48 bytes -> 64 chars
     ["NOCODB_JWT_SECRET"]="secret:64" # NocoDB authentication JWT secret
+    ["BOOKSTACK_DB_PASSWORD"]="password:32"
+    ["BOOKSTACK_DB_ROOT_PASSWORD"]="password:32"
+    ["MTBRIDGE_PASSWORD"]="password:32" # MTProto Bridge basic auth password
     ["PADDLEOCR_PASSWORD"]="password:32" # Added PaddleOCR basic auth password
     ["PG_META_CRYPTO_KEY"]="alphanum:32"
     ["POSTGRES_NON_ROOT_PASSWORD"]="password:32"
@@ -566,7 +569,7 @@ if [[ -n "$template_no_proxy" ]]; then
 fi
 
 # Hash passwords using caddy with bcrypt (consolidated loop)
-SERVICES_NEEDING_HASH=("PROMETHEUS" "SEARXNG" "COMFYUI" "PADDLEOCR" "RAGAPP" "LT" "DOCLING" "TEMPORAL_UI" "WELCOME")
+SERVICES_NEEDING_HASH=("PROMETHEUS" "SEARXNG" "COMFYUI" "PADDLEOCR" "RAGAPP" "LT" "DOCLING" "TEMPORAL_UI" "WELCOME" "MTBRIDGE")
 
 for service in "${SERVICES_NEEDING_HASH[@]}"; do
     password_var="${service}_PASSWORD"

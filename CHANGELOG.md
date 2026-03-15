@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-15
+
 ### Added
+- **BookStack** - Self-hosted knowledge base / wiki with built-in auth, accessible at `BOOKSTACK_HOSTNAME` (profile: `bookstack`)
+- **MTProto Bridge** - Telegram MTProto HTTP API (read messages, validate channels, join chats) for n8n workflows, accessible at `MTBRIDGE_HOSTNAME` with basic auth (profile: `mtproto`)
 - **Profy storage profile** - Add dedicated MinIO (`profy-storage`) with bucket auto-init and read-only Caddy route via `STORAGE_HOSTNAME`
 
 ## [1.2.6] - 2026-02-10

@@ -178,6 +178,35 @@ if is_profile_active "neo4j"; then
     }")
 fi
 
+# BookStack
+if is_profile_active "bookstack"; then
+    SERVICES_ARRAY+=("    \"bookstack\": {
+      \"hostname\": \"$(json_escape "$BOOKSTACK_HOSTNAME")\",
+      \"credentials\": {
+        \"note\": \"Default: admin@admin.com / password — change immediately!\"
+      },
+      \"extra\": {
+        \"internal_api\": \"http://bookstack:80\",
+        \"docs\": \"https://www.bookstackapp.com/docs\"
+      }
+    }")
+fi
+
+# MTProto Bridge
+if is_profile_active "mtproto"; then
+    SERVICES_ARRAY+=("    \"mtproto-bridge\": {
+      \"hostname\": \"$(json_escape "$MTBRIDGE_HOSTNAME")\",
+      \"credentials\": {
+        \"username\": \"$(json_escape "$MTBRIDGE_USERNAME")\",
+        \"password\": \"$(json_escape "$MTBRIDGE_PASSWORD")\"
+      },
+      \"extra\": {
+        \"internal_api\": \"http://mtproto-bridge:8000\",
+        \"health\": \"http://mtproto-bridge:8000/health\"
+      }
+    }")
+fi
+
 # NocoDB
 if is_profile_active "nocodb"; then
     SERVICES_ARRAY+=("    \"nocodb\": {
